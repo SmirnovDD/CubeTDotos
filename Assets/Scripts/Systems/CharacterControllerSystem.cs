@@ -14,11 +14,9 @@ namespace Systems
     /// Base controller for character movement.
     /// Is not physics-based, but uses physics to check for collisions.
     /// </summary>
-    [UpdateAfter(typeof(ExportPhysicsWorld)), UpdateAfter(typeof(PlayerControllerSystem))]
+    [UpdateInGroup(typeof(SimulationSystemGroup)), UpdateAfter(typeof(PlayerControllerSystem))]
     public sealed partial class CharacterControllerSystem : SystemBase
     {
-        private const float EPSILON = 0.001f;
-
         private BuildPhysicsWorld _buildPhysicsWorld;        
 
         private EntityQuery _characterControllerGroup;
@@ -118,14 +116,14 @@ namespace Systems
             /// <param name="collisionWorld"></param>
             private void HandleChunk(ref Entity entity, ref CharacterControllerComponentData controller, ref Translation position, ref Rotation rotation, ref PhysicsCollider collider, ref CollisionWorld collisionWorld)
             {
-                float3 epsilon = new float3(0.0f, EPSILON, 0.0f) * -math.normalize(controller.Gravity);
+                float3 epsilon = new float3(0.0f, MathUtilities.Epsilon, 0.0f) * -math.normalize(controller.Gravity);
                 float3 currPos = position.Value + epsilon;
                 quaternion currRot = rotation.Value;
 
                 float3 gravityVelocity = controller.Gravity * DeltaTime;
                 float3 verticalVelocity = (controller.VerticalVelocity + gravityVelocity);
                 float3 horizontalVelocity = (controller.CurrentDirection * controller.CurrentMagnitude * controller.Speed * DeltaTime);
-
+                
                 if (controller.IsGrounded)
                 {
                     if (controller.Jump)

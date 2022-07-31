@@ -3,5 +3,5 @@
 namespace Data
 {
     [GenerateAuthoringComponent]
-    public struct PlayerControllerTag : IComponentData { }
+    public struct UnitArriveTag : IComponentData { }
 }

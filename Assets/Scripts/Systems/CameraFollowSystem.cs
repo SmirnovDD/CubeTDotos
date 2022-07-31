@@ -11,7 +11,7 @@ namespace VertexFragment
     /// Basic system which follows the entity with the <see cref="CameraFollowComponent"/>.
     /// </summary>
     [UpdateBefore(typeof(CharacterControllerSystem))]
-    public sealed partial class CameraFollowSystem : SystemBase
+    public partial class CameraFollowSystem : SystemBase
     {
         private Transform _cameraTransform;
         

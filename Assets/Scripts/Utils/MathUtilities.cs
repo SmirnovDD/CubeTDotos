@@ -3,11 +3,15 @@ using UnityEngine;
 
 namespace Utils
 {
+
     /// <summary>
     /// Collection of utility math operations.
     /// </summary>
     public static class MathUtilities
     {
+        public const float Deg2Rad = 0.01745329f;
+        public const float Epsilon = 0.001f;
+
         /// <summary>
         /// Determines if the two float values are equal to each other within the range of the epsilon.
         /// </summary>

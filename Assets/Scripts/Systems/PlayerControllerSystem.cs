@@ -8,11 +8,12 @@ namespace Systems
     /// <summary>
     /// Main control system for player input.
     /// </summary>
+    [UpdateInGroup(typeof(SimulationSystemGroup))]
     public partial class PlayerControllerSystem : SystemBase
     {
         protected override void OnUpdate()
         {
-            Entities.WithAll<PlayerControllerComponentData>().ForEach((
+            Entities.WithAll<PlayerControllerTag>().ForEach((
                 Entity entity,
                 ref CameraFollowComponentData camera,
                 ref CharacterControllerComponentData controller) =>
@@ -46,7 +47,7 @@ namespace Systems
                 }
             
                 controller.Jump = jump;
-            }).Run();
+            }).WithBurst().Run();
         }
     }
 }
