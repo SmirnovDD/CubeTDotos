@@ -7,6 +7,9 @@ using Unity.Mathematics;
 using Unity.Physics;
 using Unity.Physics.Systems;
 using Unity.Transforms;
+using UnityEngine;
+using RaycastHit = Unity.Physics.RaycastHit;
+using SphereCollider = Unity.Physics.SphereCollider;
 
 namespace Systems
 {
@@ -69,7 +72,7 @@ namespace Systems
         /// The job that performs all of the logic of the character controller.
         /// </summary>
         [BurstCompile]
-        private struct CharacterControllerJob : IJobChunk
+        private partial struct CharacterControllerJob : IJobChunk
         {
             public float DeltaTime;
 
@@ -84,12 +87,12 @@ namespace Systems
             public void Execute(ArchetypeChunk chunk, int chunkIndex, int firstEntityIndex)
             {
                 var collisionWorld = PhysicsWorld.CollisionWorld;
-
+                
                 var chunkEntityData = chunk.GetNativeArray(EntityHandles);
                 var chunkCharacterControllerData = chunk.GetNativeArray(CharacterControllerHandles);
                 var chunkTranslationData = chunk.GetNativeArray(TranslationHandles);
                 var chunkRotationData = chunk.GetNativeArray(RotationHandles);
-
+                
                 for (int i = 0; i < chunk.Count; ++i)
                 {
                     var entity = chunkEntityData[i];
@@ -97,9 +100,9 @@ namespace Systems
                     var position = chunkTranslationData[i];
                     var rotation = chunkRotationData[i];
                     var collider = ColliderData[entity];
-
+                
                     HandleChunk(ref entity, ref controller, ref position, ref rotation, ref collider, ref collisionWorld);
-
+                
                     chunkTranslationData[i] = position;
                     chunkCharacterControllerData[i] = controller;
                 }
@@ -123,7 +126,8 @@ namespace Systems
                 float3 gravityVelocity = controller.Gravity * DeltaTime;
                 float3 verticalVelocity = (controller.VerticalVelocity + gravityVelocity);
                 float3 horizontalVelocity = (controller.CurrentDirection * controller.CurrentMagnitude * controller.Speed * DeltaTime);
-                
+                Debug.Log($"{controller.CurrentDirection}");
+
                 if (controller.IsGrounded)
                 {
                     if (controller.Jump)
@@ -219,7 +223,7 @@ namespace Systems
 
                 float3 targetPos = currPos + horizontalVelocity;
 
-                NativeList<ColliderCastHit> horizontalCollisions = PhysicsUtilities.ColliderCastAll(collider, currPos, targetPos, ref collisionWorld, entity, Allocator.Temp);
+                NativeList<ColliderCastHit> horizontalCollisions = PhysicsUtilities.ColliderCastAll(collider, currPos, targetPos,  collisionWorld, entity, Allocator.Temp);
                 PhysicsUtilities.TrimByFilter(ref horizontalCollisions, ColliderData, PhysicsCollisionFilters.DynamicWithPhysical);
 
                 if (horizontalCollisions.Length > 0)
@@ -237,7 +241,7 @@ namespace Systems
                     else
                     {
                         // We can not step up, so slide.
-                        NativeList<DistanceHit> horizontalDistances = PhysicsUtilities.ColliderDistanceAll(collider, 1.0f, new RigidTransform() { pos = currPos + horizontalVelocity, rot = currRot }, ref collisionWorld, entity, Allocator.Temp);
+                        NativeList<DistanceHit> horizontalDistances = PhysicsUtilities.ColliderDistanceAll(collider, 1.0f, new RigidTransform() { pos = currPos + horizontalVelocity, rot = currRot },  collisionWorld, entity, Allocator.Temp);
                         PhysicsUtilities.TrimByFilter(ref horizontalDistances, ColliderData, PhysicsCollisionFilters.DynamicWithPhysical);
 
                         for (int i = 0; i < horizontalDistances.Length; ++i)
@@ -284,7 +288,7 @@ namespace Systems
 
                 verticalVelocity *= DeltaTime;
 
-                NativeList<ColliderCastHit> verticalCollisions = PhysicsUtilities.ColliderCastAll(collider, currPos, currPos + verticalVelocity, ref collisionWorld, entity, Allocator.Temp);
+                NativeList<ColliderCastHit> verticalCollisions = PhysicsUtilities.ColliderCastAll(collider, currPos, currPos + verticalVelocity,  collisionWorld, entity, Allocator.Temp);
                 PhysicsUtilities.TrimByFilter(ref verticalCollisions, ColliderData, PhysicsCollisionFilters.DynamicWithPhysical);
 
                 if (verticalCollisions.Length > 0)

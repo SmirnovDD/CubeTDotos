@@ -146,6 +146,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SquaredStoppingDistance: 3
+  ObstacleAvoidanceDistance: 1
 --- !u!136 &7232381226654158715
 CapsuleCollider:
   m_ObjectHideFlags: 0

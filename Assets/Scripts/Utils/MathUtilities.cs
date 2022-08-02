@@ -24,6 +24,11 @@ namespace Utils
             return Mathf.Abs(a - b) <= epsilon;
         }
 
+        public static bool IsNan(this float3 value)
+        {
+            return float.IsNaN(value.x) || float.IsNaN(value.y) || float.IsNaN(value.z);
+        }
+        
         /// <summary>
         /// Returns true if the specified float value is <c>0.0</c> (or within the given epsilon).
         /// </summary>

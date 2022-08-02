@@ -23,7 +23,7 @@ namespace Utils
         /// <param name="transform"></param>
         /// <param name="collisionWorld"></param>
         /// <returns></returns>
-        public static unsafe NativeList<DistanceHit> ColliderDistanceAll(PhysicsCollider collider, float maxDistance, RigidTransform transform, ref CollisionWorld collisionWorld, Entity ignore, Allocator allocator = Allocator.TempJob)
+        public static unsafe NativeList<DistanceHit> ColliderDistanceAll(PhysicsCollider collider, float maxDistance, RigidTransform transform, in CollisionWorld collisionWorld, Entity ignore, Allocator allocator = Allocator.TempJob)
         {
             ColliderDistanceInput input = new ColliderDistanceInput()
             {
@@ -64,7 +64,7 @@ namespace Utils
             ComponentDataFromEntity<PhysicsCollider>? colliderData = null,
             Allocator allocator = Allocator.TempJob)
         {
-            var allDistances = ColliderDistanceAll(collider, maxDistance, transform, ref collisionWorld, ignore, allocator);
+            var allDistances = ColliderDistanceAll(collider, maxDistance, transform,  collisionWorld, ignore, allocator);
 
             if (filter.HasValue)
             {
@@ -95,7 +95,7 @@ namespace Utils
         /// <param name="collisionWorld"></param>
         /// <param name="ignore">Will ignore this entity if it was hit. Useful to prevent returning hits from the caster.</param>
         /// <returns></returns>
-        public static unsafe NativeList<ColliderCastHit> ColliderCastAll(PhysicsCollider collider, float3 from, float3 to, ref CollisionWorld collisionWorld, Entity ignore, Allocator allocator = Allocator.TempJob)
+        public static unsafe NativeList<ColliderCastHit> ColliderCastAll(PhysicsCollider collider, float3 from, float3 to, in CollisionWorld collisionWorld, Entity ignore, Allocator allocator = Allocator.TempJob)
         {
             ColliderCastInput input = new ColliderCastInput()
             {
@@ -142,7 +142,7 @@ namespace Utils
             Allocator allocator = Allocator.TempJob)
         {
             nearestHit = new ColliderCastHit();
-            NativeList<ColliderCastHit> allHits = ColliderCastAll(collider, from, to, ref collisionWorld, ignore, allocator);
+            NativeList<ColliderCastHit> allHits = ColliderCastAll(collider, from, to,  collisionWorld, ignore, allocator);
 
             if (filter.HasValue)
             {
