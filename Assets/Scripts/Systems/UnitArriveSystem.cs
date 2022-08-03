@@ -1,4 +1,5 @@
 ﻿using Data;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Physics;
@@ -42,12 +43,12 @@ namespace Systems
         
         protected override void OnUpdate()
         {
-            // if (_movementQuery.CalculateChunkCount() == 0)
-            //     return;
+            if (_movementQuery.CalculateChunkCount() == 0)
+                return;
             //
-            // var target = GetSingleton<TargetsCollectionData>().Target;
-            // var targetTranslation = GetComponentDataFromEntity<Translation>(true);
-            // _targetPosition = targetTranslation[target].Value;
+            var target = GetSingleton<TargetsCollectionData>().Target;
+            var targetTranslation = GetComponentDataFromEntity<Translation>(true);
+            _targetPosition = targetTranslation[target].Value;
             //
             // var entityTypeHandle = GetEntityTypeHandle();
             var colliderData = GetComponentDataFromEntity<PhysicsCollider>();
@@ -61,7 +62,8 @@ namespace Systems
                 TargetPos = _targetPosition,
                 //EntityHandles = entityTypeHandle,
                 ColliderData = colliderData,
-                CollisionWorld = _buildPhysicsWorld.PhysicsWorld.CollisionWorld
+                CollisionWorld = _buildPhysicsWorld.PhysicsWorld.CollisionWorld,
+                ColliderCastDirections = new NativeArray<float3>(3, Allocator.TempJob)
 
                 // CharacterControllerHandles = characterControllerTypeHandle,
                 // AIMovementDataHandles = aiMovementDataTypeHandle,
@@ -71,6 +73,10 @@ namespace Systems
             //
             
             Dependency = job.ScheduleParallel(_movementQuery, Dependency);
+            
+            Dependency.Complete();
+
+            job.ColliderCastDirections.Dispose();
         }
     }
 }

@@ -126,7 +126,6 @@ namespace Systems
                 float3 gravityVelocity = controller.Gravity * DeltaTime;
                 float3 verticalVelocity = (controller.VerticalVelocity + gravityVelocity);
                 float3 horizontalVelocity = (controller.CurrentDirection * controller.CurrentMagnitude * controller.Speed * DeltaTime);
-                Debug.Log($"{controller.CurrentDirection}");
 
                 if (controller.IsGrounded)
                 {
