@@ -23,7 +23,7 @@ namespace Utils
         /// <param name="transform"></param>
         /// <param name="collisionWorld"></param>
         /// <returns></returns>
-        public static unsafe NativeList<DistanceHit> ColliderDistanceAll(PhysicsCollider collider, float maxDistance, RigidTransform transform, in CollisionWorld collisionWorld, Entity ignore, Allocator allocator = Allocator.TempJob)
+        public static unsafe NativeList<DistanceHit> ColliderDistanceAll(PhysicsCollider collider, float maxDistance, RigidTransform transform, in CollisionWorld collisionWorld, Entity ignore, CollisionFilter? filter, Allocator allocator = Allocator.TempJob)
         {
             ColliderDistanceInput input = new ColliderDistanceInput()
             {
@@ -32,6 +32,9 @@ namespace Utils
                 Transform = transform
             };
 
+            if (filter.HasValue)
+                input.Collider->Filter = filter.Value;
+            
             NativeList<DistanceHit> allDistances = new NativeList<DistanceHit>(allocator);
 
             if (collisionWorld.CalculateDistance(input, ref allDistances))
@@ -64,7 +67,7 @@ namespace Utils
             ComponentDataFromEntity<PhysicsCollider>? colliderData = null,
             Allocator allocator = Allocator.TempJob)
         {
-            var allDistances = ColliderDistanceAll(collider, maxDistance, transform,  collisionWorld, ignore, allocator);
+            var allDistances = ColliderDistanceAll(collider, maxDistance, transform,  collisionWorld, ignore, filter, allocator);
 
             if (filter.HasValue)
             {
@@ -95,15 +98,18 @@ namespace Utils
         /// <param name="collisionWorld"></param>
         /// <param name="ignore">Will ignore this entity if it was hit. Useful to prevent returning hits from the caster.</param>
         /// <returns></returns>
-        public static unsafe NativeList<ColliderCastHit> ColliderCastAll(PhysicsCollider collider, float3 from, float3 to, in CollisionWorld collisionWorld, Entity ignore, Allocator allocator = Allocator.TempJob)
+        public static unsafe NativeList<ColliderCastHit> ColliderCastAll(PhysicsCollider collider, float3 from, float3 to, in CollisionWorld collisionWorld, Entity ignore, CollisionFilter? filter, Allocator allocator = Allocator.TempJob)
         {
             ColliderCastInput input = new ColliderCastInput()
             {
                 Collider = collider.ColliderPtr,
                 Start = from,
-                End = to
+                End = to,
             };
-
+            
+            if (filter.HasValue)
+                input.Collider->Filter = filter.Value;
+            
             NativeList<ColliderCastHit> allHits = new NativeList<ColliderCastHit>(allocator);
 
             if (collisionWorld.CastCollider(input, ref allHits))
@@ -142,7 +148,7 @@ namespace Utils
             Allocator allocator = Allocator.TempJob)
         {
             nearestHit = new ColliderCastHit();
-            NativeList<ColliderCastHit> allHits = ColliderCastAll(collider, from, to,  collisionWorld, ignore, allocator);
+            NativeList<ColliderCastHit> allHits = ColliderCastAll(collider, from, to,  collisionWorld, ignore, filter, allocator);
 
             if (filter.HasValue)
             {

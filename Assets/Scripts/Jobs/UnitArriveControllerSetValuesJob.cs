@@ -54,10 +54,27 @@ namespace Systems
                 // }
                 
                 {
-                    //CheckForObstacles(entity, ref characterControllerComponentData, collider, position, rotation, aiMovementData);
+                    CheckForObstacles(entity, ref characterControllerComponentData, collider, position, rotation, aiMovementData);
                     
-                    //if (!_obstacleIsInTheWay)
-                        MoveToTarget(ref characterControllerComponentData, position, aiMovementData);
+                     if (_obstacleIsInTheWay == true)
+                     {
+                         var targetPosition = _obstacleCollisionPoint + _obstacleCollisionNormal * aiMovementData.ObstacleAvoidanceDistance;
+                         Debug.DrawLine(position.Value, _obstacleCollisionPoint, Color.magenta);
+                         Debug.DrawLine(position.Value + new float3(0,0.1f,0), targetPosition + new float3(0,0.1f,0), Color.green);
+                         Debug.DrawLine(_obstacleCollisionPoint, _obstacleCollisionPoint + _obstacleCollisionNormal * aiMovementData.ObstacleAvoidanceDistance, Color.black);
+                         Debug.DrawLine(_obstacleCollisionPoint + new float3(0, -0.1f, 0), _obstacleCollisionPoint + _obstacleCollisionNormal + new float3(0, -0.1f, 0), Color.red);
+                         var controllerDirection = new float2(characterControllerComponentData.CurrentDirection.x, characterControllerComponentData.CurrentDirection.z);
+                         var collisionNormal = new float2(_obstacleCollisionNormal.x, _obstacleCollisionNormal.z);
+                         var angle = (float)MathUtilities.AngleBetween(controllerDirection, collisionNormal);
+                         
+                         if (angle > 165f)
+                         {
+                             var perp = new float3(-_obstacleCollisionNormal.z, _obstacleCollisionNormal.y, _obstacleCollisionNormal.x);
+                             TargetPos = targetPosition + (perp * (math.sin((angle - 165f) * MathUtilities.Deg2Rad) * 2f * aiMovementData.ObstacleAvoidanceDistance));
+                         }
+                     }
+
+                    MoveToTarget(ref characterControllerComponentData, position, aiMovementData);
                 }
             }
             
@@ -72,16 +89,16 @@ namespace Systems
         
         private void CheckForObstacles(Entity entity, ref CharacterControllerComponentData controller, in PhysicsCollider collider, in Translation position, in Rotation rotation, in AIMovementData aiMovementData)
         {
-            var facingDir = math.normalize(controller.CurrentDirection);
+            if (MathUtilities.IsZero(controller.CurrentDirection) || controller.CurrentDirection.IsNan())
+                return;
             
-            ColliderCastDirections[0] = facingDir;
+            var orientation = VectorToOrientation(controller.CurrentDirection);
             
-            float orientation = VectorToOrientation(facingDir);
-            
+            ColliderCastDirections[0] = controller.CurrentDirection;
             ColliderCastDirections[1] = OrientationToVector(orientation + 45 * MathUtilities.Deg2Rad);
             ColliderCastDirections[2] = OrientationToVector(orientation - 45 * MathUtilities.Deg2Rad);
             
-            CastCollidersAtDirections(ref entity, collider, position, rotation, aiMovementData);
+            CheckDifferentDirections(ref entity, collider, position, rotation, aiMovementData);
         }
         
         private float VectorToOrientation(float3 direction)
@@ -93,42 +110,50 @@ namespace Systems
         {
             return math.normalize(new float3(math.cos(-orientation), 0, math.sin(-orientation)));
         }
+
+        private void CheckDifferentDirections(ref Entity entity, in PhysicsCollider collider, in Translation position, in Rotation rotation, in AIMovementData aiMovementData)
+        {
+            for (int i = 0; i < ColliderCastDirections.Length; i++)
+            {
+                _obstacleCheckColliderCastPosition = position.Value + ColliderCastDirections[i];
+                CastCollidersAtDirections(ref entity, collider, position, rotation, aiMovementData);
+                if (_obstacleIsInTheWay == true)
+                    break;
+            }
+        }
         
         private void CastCollidersAtDirections(ref Entity entity, in PhysicsCollider collider, in Translation position, in Rotation rotation, in AIMovementData aiMovementData)
         {
             quaternion currRot = rotation.Value;
             float3 targetPos = _obstacleCheckColliderCastPosition;
-        
-            NativeList<ColliderCastHit> horizontalCollisions = PhysicsUtilities.ColliderCastAll(collider, position.Value, targetPos, CollisionWorld, entity, Allocator.Temp);
-            PhysicsUtilities.TrimByFilter(ref horizontalCollisions, ColliderData, PhysicsCollisionFilters.DynamicWithPhysical);
-        
+            NativeList<ColliderCastHit> horizontalCollisions = PhysicsUtilities.ColliderCastAll(collider, position.Value, targetPos,  CollisionWorld, entity, CollisionFilters.ObstacleAvoidanceCollider, Allocator.Temp);
+
             if (horizontalCollisions.Length > 0)
             {
-                NativeList<DistanceHit> horizontalDistances = PhysicsUtilities.ColliderDistanceAll(collider, aiMovementData.ObstacleAvoidanceDistance,
-                    new RigidTransform {pos = targetPos, rot = currRot}, CollisionWorld, entity, Allocator.Temp);
-        
-                PhysicsUtilities.TrimByFilter(ref horizontalDistances, ColliderData, PhysicsCollisionFilters.DynamicWithPhysical);
+                NativeList<DistanceHit> horizontalDistances = PhysicsUtilities.ColliderDistanceAll(collider, aiMovementData.ObstacleAvoidanceDistance, new RigidTransform {pos = targetPos, rot = currRot}, CollisionWorld, entity, CollisionFilters.ObstacleAvoidanceCollider, Allocator.Temp);
         
                 var closestCollisionIndex = 0;
-                var closestDistance = 0f;
+                var closestDistance = math.INFINITY;
         
                 for (int i = 0; i < horizontalDistances.Length; ++i)
                 {
-                    if (closestDistance < horizontalDistances[i].Distance)
+                    if (horizontalDistances[i].Distance < closestDistance)
                     {
                         closestDistance = horizontalDistances[i].Distance;
                         closestCollisionIndex = i;
+                        Debug.Log($"{closestDistance}");
                     }
                 }
         
                 _obstacleIsInTheWay = true;
                 _obstacleCollisionPoint = horizontalDistances[closestCollisionIndex].Position;
                 _obstacleCollisionNormal = horizontalDistances[closestCollisionIndex].SurfaceNormal;
-        
+                Debug.DrawLine(position.Value, _obstacleCollisionPoint + _obstacleCollisionNormal, Color.blue);
+
                 horizontalDistances.Dispose();
             }
         
             horizontalCollisions.Dispose();
         }
-        }
     }
+}

@@ -29,6 +29,14 @@ namespace Utils
             return float.IsNaN(value.x) || float.IsNaN(value.y) || float.IsNaN(value.z);
         }
         
+        public static double AngleBetween(float2 vector1, float2 vector2)
+        {
+            double sin = vector1.x * vector2.y - vector2.x * vector1.y;  
+            double cos = vector1.x * vector2.x + vector1.y * vector2.y;
+
+            return math.atan2(sin, cos) * (180 / math.PI);
+        }
+        
         /// <summary>
         /// Returns true if the specified float value is <c>0.0</c> (or within the given epsilon).
         /// </summary>

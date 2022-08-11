@@ -126,7 +126,7 @@ namespace Systems
                 float3 gravityVelocity = controller.Gravity * DeltaTime;
                 float3 verticalVelocity = (controller.VerticalVelocity + gravityVelocity);
                 float3 horizontalVelocity = (controller.CurrentDirection * controller.CurrentMagnitude * controller.Speed * DeltaTime);
-
+ 
                 if (controller.IsGrounded)
                 {
                     if (controller.Jump)
@@ -151,7 +151,7 @@ namespace Systems
                 HandleVerticalMovement(ref verticalVelocity, ref entity, ref currPos, ref currRot, ref controller, ref collider, ref collisionWorld);
                 currPos += verticalVelocity;
 
-                CorrectForCollision(ref entity, ref currPos, ref currRot, ref controller, ref collider, ref collisionWorld);
+                //CorrectForCollision(ref entity, ref currPos, ref currRot, ref controller, ref collider, ref collisionWorld);
                 DetermineIfGrounded(entity, ref currPos, ref epsilon, ref controller, ref collider, ref collisionWorld);
 
                 position.Value = currPos - epsilon;
@@ -187,7 +187,7 @@ namespace Systems
                     })
                 };
 
-                if (PhysicsUtilities.ColliderDistance(out DistanceHit smallestHit, sampleCollider, 0.1f, transform, ref collisionWorld, entity, PhysicsCollisionFilters.DynamicWithPhysical, null, ColliderData, Allocator.Temp))
+                if (PhysicsUtilities.ColliderDistance(out DistanceHit smallestHit, sampleCollider, 0.1f, transform, ref collisionWorld, entity, CollisionFilters.Character, null, ColliderData, Allocator.Temp))
                 {
                     if (smallestHit.Distance < 0.0f)
                     {
@@ -222,14 +222,14 @@ namespace Systems
 
                 float3 targetPos = currPos + horizontalVelocity;
 
-                NativeList<ColliderCastHit> horizontalCollisions = PhysicsUtilities.ColliderCastAll(collider, currPos, targetPos,  collisionWorld, entity, Allocator.Temp);
-                PhysicsUtilities.TrimByFilter(ref horizontalCollisions, ColliderData, PhysicsCollisionFilters.DynamicWithPhysical);
+                NativeList<ColliderCastHit> horizontalCollisions = PhysicsUtilities.ColliderCastAll(collider, currPos, targetPos,  collisionWorld, entity, null, Allocator.Temp);
+                PhysicsUtilities.TrimByFilter(ref horizontalCollisions, ColliderData, CollisionFilters.Character);
 
                 if (horizontalCollisions.Length > 0)
                 {
                     // We either have to step or slide as something is in our way.
                     float3 step = new float3(0.0f, controller.MaxStep, 0.0f);
-                    PhysicsUtilities.ColliderCast(out ColliderCastHit nearestStepHit, collider, targetPos + step, targetPos, ref collisionWorld, entity, PhysicsCollisionFilters.DynamicWithPhysical, null, ColliderData, Allocator.Temp);
+                    PhysicsUtilities.ColliderCast(out ColliderCastHit nearestStepHit, collider, targetPos + step, targetPos, ref collisionWorld, entity, CollisionFilters.Character, null, ColliderData, Allocator.Temp);
 
                     if (!MathUtilities.IsZero(nearestStepHit.Fraction))
                     {
@@ -240,8 +240,8 @@ namespace Systems
                     else
                     {
                         // We can not step up, so slide.
-                        NativeList<DistanceHit> horizontalDistances = PhysicsUtilities.ColliderDistanceAll(collider, 1.0f, new RigidTransform() { pos = currPos + horizontalVelocity, rot = currRot },  collisionWorld, entity, Allocator.Temp);
-                        PhysicsUtilities.TrimByFilter(ref horizontalDistances, ColliderData, PhysicsCollisionFilters.DynamicWithPhysical);
+                        NativeList<DistanceHit> horizontalDistances = PhysicsUtilities.ColliderDistanceAll(collider, 1.0f, new RigidTransform() { pos = currPos + horizontalVelocity, rot = currRot },  collisionWorld, entity, null, Allocator.Temp);
+                        PhysicsUtilities.TrimByFilter(ref horizontalDistances, ColliderData, CollisionFilters.Character);
 
                         for (int i = 0; i < horizontalDistances.Length; ++i)
                         {
@@ -287,8 +287,8 @@ namespace Systems
 
                 verticalVelocity *= DeltaTime;
 
-                NativeList<ColliderCastHit> verticalCollisions = PhysicsUtilities.ColliderCastAll(collider, currPos, currPos + verticalVelocity,  collisionWorld, entity, Allocator.Temp);
-                PhysicsUtilities.TrimByFilter(ref verticalCollisions, ColliderData, PhysicsCollisionFilters.DynamicWithPhysical);
+                NativeList<ColliderCastHit> verticalCollisions = PhysicsUtilities.ColliderCastAll(collider, currPos, currPos + verticalVelocity,  collisionWorld, entity, null, Allocator.Temp);
+                PhysicsUtilities.TrimByFilter(ref verticalCollisions, ColliderData, CollisionFilters.Character);
 
                 if (verticalCollisions.Length > 0)
                 {
@@ -298,13 +298,13 @@ namespace Systems
                         rot = currRot
                     };
 
-                    if (PhysicsUtilities.ColliderDistance(out DistanceHit verticalPenetration, collider, 1.0f, transform, ref collisionWorld, entity, PhysicsCollisionFilters.DynamicWithPhysical, null, ColliderData, Allocator.Temp))
+                    if (PhysicsUtilities.ColliderDistance(out DistanceHit verticalPenetration, collider, 1.0f, transform, ref collisionWorld, entity, CollisionFilters.Character, null, ColliderData, Allocator.Temp))
                     {
                         if (verticalPenetration.Distance < -0.01f)
                         {
                             verticalVelocity += (verticalPenetration.SurfaceNormal * verticalPenetration.Distance);
 
-                            if (PhysicsUtilities.ColliderCast(out ColliderCastHit adjustedHit, collider, currPos, currPos + verticalVelocity, ref collisionWorld, entity, PhysicsCollisionFilters.DynamicWithPhysical, null, ColliderData, Allocator.Temp))
+                            if (PhysicsUtilities.ColliderCast(out ColliderCastHit adjustedHit, collider, currPos, currPos + verticalVelocity, ref collisionWorld, entity, CollisionFilters.Character, null, ColliderData, Allocator.Temp))
                             {
                                 verticalVelocity *= adjustedHit.Fraction;
                             }
@@ -339,11 +339,11 @@ namespace Systems
                 float3 posForward = samplePos + new float3(0.0f, 0.0f, aabb.Extents.z * mod);
                 float3 posBackward = samplePos - new float3(0.0f, 0.0f, aabb.Extents.z * mod);
 
-                controller.IsGrounded = PhysicsUtilities.Raycast(out RaycastHit centerHit, samplePos, samplePos + offset, ref collisionWorld, entity, PhysicsCollisionFilters.DynamicWithPhysical, Allocator.Temp) ||
-                                        PhysicsUtilities.Raycast(out RaycastHit leftHit, posLeft, posLeft + offset, ref collisionWorld, entity, PhysicsCollisionFilters.DynamicWithPhysical, Allocator.Temp) ||
-                                        PhysicsUtilities.Raycast(out RaycastHit rightHit, posRight, posRight + offset, ref collisionWorld, entity, PhysicsCollisionFilters.DynamicWithPhysical, Allocator.Temp) ||
-                                        PhysicsUtilities.Raycast(out RaycastHit forwardHit, posForward, posForward + offset, ref collisionWorld, entity, PhysicsCollisionFilters.DynamicWithPhysical, Allocator.Temp) ||
-                                        PhysicsUtilities.Raycast(out RaycastHit backwardHit, posBackward, posBackward + offset, ref collisionWorld, entity, PhysicsCollisionFilters.DynamicWithPhysical, Allocator.Temp);
+                controller.IsGrounded = PhysicsUtilities.Raycast(out RaycastHit centerHit, samplePos, samplePos + offset, ref collisionWorld, entity, CollisionFilters.Character, Allocator.Temp) ||
+                                        PhysicsUtilities.Raycast(out RaycastHit leftHit, posLeft, posLeft + offset, ref collisionWorld, entity, CollisionFilters.Character, Allocator.Temp) ||
+                                        PhysicsUtilities.Raycast(out RaycastHit rightHit, posRight, posRight + offset, ref collisionWorld, entity, CollisionFilters.Character, Allocator.Temp) ||
+                                        PhysicsUtilities.Raycast(out RaycastHit forwardHit, posForward, posForward + offset, ref collisionWorld, entity, CollisionFilters.Character, Allocator.Temp) ||
+                                        PhysicsUtilities.Raycast(out RaycastHit backwardHit, posBackward, posBackward + offset, ref collisionWorld, entity, CollisionFilters.Character, Allocator.Temp);
             }
         }
     }

@@ -8,7 +8,10 @@ using Unity.Transforms;
 
 namespace Systems
 {
-    [UpdateInGroup(typeof(SimulationSystemGroup)), UpdateBefore(typeof(CharacterControllerSystem))]
+    [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
+    [UpdateAfter(typeof(StepPhysicsWorld))]
+    [UpdateBefore(typeof(EndFramePhysicsSystem))]
+    
     public partial class UnitArriveSystem : SystemBase
     {
         private EntityQuery _movementQuery;
@@ -39,6 +42,7 @@ namespace Systems
         protected override void OnStartRunning()
         {
             _movementQuery = GetEntityQuery(_entityQueryDesc);
+            this.RegisterPhysicsRuntimeSystemReadOnly();
         }
         
         protected override void OnUpdate()
