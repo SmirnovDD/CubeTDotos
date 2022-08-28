@@ -64,6 +64,7 @@ namespace Systems
             var job = new UnitArriveControllerSetValuesJob
             {
                 TargetPos = _targetPosition,
+                DeltaTime = Time.DeltaTime,
                 //EntityHandles = entityTypeHandle,
                 ColliderData = colliderData,
                 CollisionWorld = _buildPhysicsWorld.PhysicsWorld.CollisionWorld,

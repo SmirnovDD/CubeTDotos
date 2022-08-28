@@ -147,6 +147,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SquaredStoppingDistance: 3
   ObstacleAvoidanceDistance: 1
+  RotationSpeed: 10
 --- !u!114 &598509453613154621
 MonoBehaviour:
   m_ObjectHideFlags: 0
