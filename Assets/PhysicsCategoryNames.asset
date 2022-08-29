@@ -16,9 +16,9 @@ MonoBehaviour:
   - Solid
   - Character
   - Unit
+  - ObstacleAvoidanceCollider
   - Terrain
-  - 
-  - 
+  - Dynamic
   - 
   - 
   - 

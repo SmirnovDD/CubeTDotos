@@ -60,21 +60,22 @@ namespace Systems
                     
                      if (_obstacleIsInTheWay == true)
                      {
-                         //TargetPos = _obstacleCollisionPoint + _obstacleCollisionNormal * aiMovementData.ObstacleAvoidanceDistance;
+                         TargetPos = _obstacleCollisionPoint + _obstacleCollisionNormal * aiMovementData.ObstacleAvoidanceDistance;
                          // Debug.DrawLine(position.Value, _obstacleCollisionPoint, Color.magenta);
                          // Debug.DrawLine(position.Value + new float3(0,0.1f,0), targetPosition + new float3(0,0.1f,0), Color.green);
                          //Debug.DrawLine(_obstacleCollisionPoint, _obstacleCollisionPoint + _obstacleCollisionNormal, Color.red);
-                         var controllerDirection = new float2(characterControllerComponentData.CurrentDirection.x, characterControllerComponentData.CurrentDirection.z);
-                         var collisionNormal = new float3(_obstacleCollisionNormal.x, 0, _obstacleCollisionNormal.z);
-                         //var angle = (float)MathUtilities.AngleBetween(controllerDirection, collisionNormal);
-                         
-                         //if (math.abs(angle) > 100)
-                         {
-                             var perp = -math.cross(new float3(0, 1, 0), collisionNormal);
-                             //Debug.DrawLine(position.Value, position.Value + perp, Color.magenta);
-                             //Debug.Log($"{angle}");
-                             TargetPos = position.Value + perp; // * (math.sin((angle - 165f) * MathUtilities.Deg2Rad) * 2f * aiMovementData.ObstacleAvoidanceDistance));
-                         }
+                         // var controllerDirection = new float2(characterControllerComponentData.CurrentDirection.x, characterControllerComponentData.CurrentDirection.z);
+                         // var collisionNormal = new float3(_obstacleCollisionNormal.x, 0, _obstacleCollisionNormal.z);
+                         // var collisionNormal2D = new float2(collisionNormal.x, collisionNormal.z);
+                         // var angle = (float)MathUtilities.AngleBetween(controllerDirection, collisionNormal2D);
+                         //
+                         // if (math.abs(angle) > 165)
+                         // {
+                         //     var perp = -math.cross(new float3(0, 1, 0), collisionNormal);
+                         //     //Debug.DrawLine(position.Value, position.Value + perp, Color.magenta);
+                         //     //Debug.Log($"{angle}");
+                         //     TargetPos = position.Value + perp; // * (math.sin((angle - 165f) * MathUtilities.Deg2Rad) * 2f * aiMovementData.ObstacleAvoidanceDistance));
+                         // }
                      }
 
                     MoveToTarget(ref characterControllerComponentData, position, aiMovementData);

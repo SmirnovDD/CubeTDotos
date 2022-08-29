@@ -3,7 +3,6 @@
   <component name="ContentModelUserStore">
     <attachedFolders />
     <explicitIncludes>
-      <Path>Assets</Path>
       <Path>Library/PackageCache/com.unity.burst@1.6.6</Path>
       <Path>Library/PackageCache/com.unity.collab-proxy@1.15.18</Path>
       <Path>Library/PackageCache/com.unity.editorcoroutines@1.0.0</Path>
@@ -35,7 +34,6 @@
       <Path>Library/PackageCache/com.unity.textmeshpro@3.0.6</Path>
       <Path>Library/PackageCache/com.unity.timeline@1.6.4</Path>
       <Path>Library/PackageCache/com.unity.visualscripting@1.7.8</Path>
-      <Path>Packages</Path>
       <Path>ProjectSettings</Path>
     </explicitIncludes>
     <explicitExcludes>
