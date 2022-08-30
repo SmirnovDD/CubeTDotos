@@ -277,7 +277,7 @@ namespace Utils
         /// <param name="filter"></param>
         public static unsafe void TrimByFilter(ref NativeList<ColliderCastHit> castResults, ComponentDataFromEntity<PhysicsCollider> colliderData, CollisionFilter filter)
         {
-            for (int i = castResults.Length - 1; i >= 0; --i)
+            for (int i = 0; i < castResults.Length; ++i)
             {
                 if (colliderData.HasComponent(castResults[i].Entity))
                 {
@@ -292,10 +292,22 @@ namespace Utils
                 castResults.RemoveAt(i);
             }
         }
+
+        public static void RemoveSelfFromCollision(ref NativeList<ColliderCastHit> castResults, Entity colliderEntity)
+        {
+            for (int i = castResults.Length - 1; i >= 0; i--)
+            {
+                if (castResults[i].Entity == colliderEntity)
+                {
+                    castResults.RemoveAt(i);
+                    break;
+                }
+            }
+        }
         
         public static unsafe void TrimByFilter(ref NativeList<DistanceHit> castResults, ComponentDataFromEntity<PhysicsCollider> colliderData, CollisionFilter filter)
         {
-            for (int i = castResults.Length - 1; i >= 0; --i)
+            for (int i = 0; i < castResults.Length; ++i)
             {
                 if (colliderData.HasComponent(castResults[i].Entity))
                 {

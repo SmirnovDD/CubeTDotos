@@ -34,10 +34,10 @@ namespace Utils
             CollidesWith = (uint) (CollisionLayer.Solid | CollisionLayer.Terrain | CollisionLayer.Dynamic)
         };
         
-        public static readonly CollisionFilter Unit = new CollisionFilter()
+        public static readonly CollisionFilter OnlyWithStaticObjects = new CollisionFilter()
         {
-            BelongsTo = (uint) CollisionLayer.Unit,
-            CollidesWith = (uint) (CollisionLayer.Solid | CollisionLayer.Character | CollisionLayer.Terrain)
+            BelongsTo = (uint) (CollisionLayer.Unit | CollisionLayer.Character),
+            CollidesWith = (uint) (CollisionLayer.Solid | CollisionLayer.Terrain)
         };
         
         public static readonly CollisionFilter ObstacleAvoidanceCollider = new CollisionFilter()

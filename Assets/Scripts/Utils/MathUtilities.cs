@@ -19,9 +19,9 @@ namespace Utils
         /// <param name="b"></param>
         /// <param name="epsilon"></param>
         /// <returns></returns>
-        public static bool FloatEquals(float a, float b, float epsilon = 0.000001f)
+        public static bool FloatEquals(float a, float b)
         {
-            return Mathf.Abs(a - b) <= epsilon;
+            return Mathf.Abs(a - b) <= Epsilon;
         }
 
         public static bool IsNan(this float3 value)
@@ -43,9 +43,9 @@ namespace Utils
         /// <param name="a"></param>
         /// <param name="epsilon"></param>
         /// <returns></returns>
-        public static bool IsZero(float a, float epsilon = 0.0000001f)
+        public static bool IsZero(float a)
         {
-            return FloatEquals(a, 0.0f, epsilon);
+            return FloatEquals(a, 0.0f);
         }
 
         /// <summary>
@@ -54,9 +54,9 @@ namespace Utils
         /// <param name="v"></param>
         /// <param name="epsilon"></param>
         /// <returns></returns>
-        public static bool IsZero(float3 v, float epsilon = 0.000001f)
+        public static bool IsZero(float3 v)
         {
-            return (IsZero(v.x, epsilon) && IsZero(v.y, epsilon) && IsZero(v.z, epsilon));
+            return (IsZero(v.x) && IsZero(v.y) && IsZero(v.z));
         }
 
         /// <summary>
@@ -65,11 +65,11 @@ namespace Utils
         /// <param name="vec"></param>
         /// <param name="epsilon"></param>
         /// <returns></returns>
-        public static float3 ZeroOut(float3 vec, float epsilon = 0.001f)
+        public static float3 ZeroOut(float3 vec)
         {
-            vec.x = math.abs(vec.x) < epsilon ? 0.0f : vec.x;
-            vec.y = math.abs(vec.y) < epsilon ? 0.0f : vec.y;
-            vec.z = math.abs(vec.z) < epsilon ? 0.0f : vec.z;
+            vec.x = math.abs(vec.x) < Epsilon ? 0.0f : vec.x;
+            vec.y = math.abs(vec.y) < Epsilon ? 0.0f : vec.y;
+            vec.z = math.abs(vec.z) < Epsilon ? 0.0f : vec.z;
 
             return vec;
         }
