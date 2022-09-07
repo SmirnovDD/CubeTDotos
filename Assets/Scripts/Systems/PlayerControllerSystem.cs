@@ -1,5 +1,7 @@
 using Data;
 using Unity.Entities;
+using Unity.Mathematics;
+using Unity.Physics.Systems;
 using UnityEngine;
 using Utils;
 
@@ -8,7 +10,10 @@ namespace Systems
     /// <summary>
     /// Main control system for player input.
     /// </summary>
-    [UpdateInGroup(typeof(SimulationSystemGroup))]
+    // [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
+    // [UpdateAfter(typeof(ExportPhysicsWorld))]
+    [UpdateBefore(typeof(CharacterController))]
+    //[UpdateBefore(typeof(EndFramePhysicsSystem))]
     public partial class PlayerControllerSystem : SystemBase
     {
         protected override void OnUpdate()
@@ -45,7 +50,6 @@ namespace Systems
                 {
                     controller.CurrentMagnitude = 0.0f;
                 }
-            
                 controller.Jump = jump;
             }).WithBurst().Run();
         }

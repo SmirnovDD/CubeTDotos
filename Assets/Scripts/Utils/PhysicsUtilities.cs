@@ -120,6 +120,27 @@ namespace Utils
             return allHits;
         }
 
+        public static void SortCollidersByDistanceWithInsertionSort(this NativeList<ColliderCastHit> hits)
+        {
+            int n = hits.Length;
+            for (int i = 1; i < n; i++) 
+            {
+                var key = hits[i];
+                int j = i - 1;
+
+                // Move elements of arr[0..i-1],
+                // that are greater than key,
+                // to one position ahead of
+                // their current position
+                while (j >= 0 && hits[j].Fraction > key.Fraction) 
+                {
+                    hits[j + 1] = hits[j];
+                    j = j - 1;
+                }
+                hits[j + 1] = key;
+            }
+        }
+        
         /// <summary>
         /// Performs a collider cast along the specified ray.<para/>
         /// 
@@ -293,18 +314,6 @@ namespace Utils
             }
         }
 
-        public static void RemoveSelfFromCollision(ref NativeList<ColliderCastHit> castResults, Entity colliderEntity)
-        {
-            for (int i = castResults.Length - 1; i >= 0; i--)
-            {
-                if (castResults[i].Entity == colliderEntity)
-                {
-                    castResults.RemoveAt(i);
-                    break;
-                }
-            }
-        }
-        
         public static unsafe void TrimByFilter(ref NativeList<DistanceHit> castResults, ComponentDataFromEntity<PhysicsCollider> colliderData, CollisionFilter filter)
         {
             for (int i = 0; i < castResults.Length; ++i)

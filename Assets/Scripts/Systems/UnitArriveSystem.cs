@@ -8,10 +8,9 @@ using Unity.Transforms;
 
 namespace Systems
 {
-    [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
-    [UpdateAfter(typeof(StepPhysicsWorld))]
-    [UpdateBefore(typeof(EndFramePhysicsSystem))]
-    
+    // [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
+    // [UpdateAfter(typeof(StepPhysicsWorld))]
+    // [UpdateBefore(typeof(EndFramePhysicsSystem))]
     public partial class UnitArriveSystem : SystemBase
     {
         private EntityQuery _movementQuery;

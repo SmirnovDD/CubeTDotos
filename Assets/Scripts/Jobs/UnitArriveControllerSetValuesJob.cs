@@ -96,8 +96,7 @@ namespace Systems
         private void CheckForObstacles(Entity entity, ref CharacterControllerComponentData controller, in PhysicsCollider collider, in Translation position, in Rotation rotation, in AIMovementData aiMovementData)
         {
             var directionToTarget = controller.CurrentDirection;
-
-            if (MathUtilities.IsZero(directionToTarget) || directionToTarget.IsNan())
+            if (directionToTarget.IsZero() || directionToTarget.IsNan())
                 return;
             
             var orientation = VectorToOrientation(directionToTarget);

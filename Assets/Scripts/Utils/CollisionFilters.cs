@@ -34,6 +34,12 @@ namespace Utils
             CollidesWith = (uint) (CollisionLayer.Solid | CollisionLayer.Terrain | CollisionLayer.Dynamic)
         };
         
+        public static readonly CollisionFilter DynamicWithPhysicalExcludingTerrain = new CollisionFilter()
+        {
+            BelongsTo = (uint)CollisionLayer.Dynamic,
+            CollidesWith = (uint) (CollisionLayer.Solid | CollisionLayer.Dynamic)
+        };
+        
         public static readonly CollisionFilter OnlyWithStaticObjects = new CollisionFilter()
         {
             BelongsTo = (uint) (CollisionLayer.Unit | CollisionLayer.Character),

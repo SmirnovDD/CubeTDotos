@@ -1,4 +1,5 @@
-﻿using Unity.Mathematics;
+﻿using System;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Utils
@@ -43,7 +44,7 @@ namespace Utils
         /// <param name="a"></param>
         /// <param name="epsilon"></param>
         /// <returns></returns>
-        public static bool IsZero(float a)
+        public static bool IsZero(this float a)
         {
             return FloatEquals(a, 0.0f);
         }
@@ -54,7 +55,7 @@ namespace Utils
         /// <param name="v"></param>
         /// <param name="epsilon"></param>
         /// <returns></returns>
-        public static bool IsZero(float3 v)
+        public static bool IsZero(this float3 v)
         {
             return (IsZero(v.x) && IsZero(v.y) && IsZero(v.z));
         }
@@ -73,5 +74,28 @@ namespace Utils
 
             return vec;
         }
+
+        public static bool IsEqualTo(this float3 f, float3 to)
+        {
+            return f.x.IsApproximately(to.x) && f.y.IsApproximately(to.y) && f.z.IsApproximately(to.z);
+        }
+
+        public static bool IsApproximately(this float a, float b)
+        {
+            return math.abs(a - b) < Epsilon;
+        }
+
+        public static float2 ToFloat2(this float3 f)
+        {
+            return new float2(f.x, f.z);
+        }
+
+        public static float SqrMagnitude(this float2 v)
+        {
+            return (float) (v.x * (double) v.x + v.y * (double) v.y);
+        }
+        
+        public static float SqrMagnitude(this float3 v) => (float) ((double) v.x * v.x + (double) v.y * v.y + (double) v.z * v.z);
+
     }
 }

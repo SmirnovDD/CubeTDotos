@@ -64,7 +64,7 @@ namespace VertexFragment
         {
             float scroll = Input.GetAxis("Mouse ScrollWheel");
 
-            if (!MathUtilities.IsZero(scroll))
+            if (!scroll.IsZero())
             {
                 camera.Zoom -= scroll;
                 return true;
