@@ -66,13 +66,14 @@ namespace Utils
         /// <param name="vec"></param>
         /// <param name="epsilon"></param>
         /// <returns></returns>
-        public static float3 ZeroOut(float3 vec)
+        public static float3 ZeroOut(this float3 vec)
         {
-            vec.x = math.abs(vec.x) < Epsilon ? 0.0f : vec.x;
-            vec.y = math.abs(vec.y) < Epsilon ? 0.0f : vec.y;
-            vec.z = math.abs(vec.z) < Epsilon ? 0.0f : vec.z;
-
-            return vec;
+            return vec.SqrMagnitude() < Epsilon ? float3.zero : vec;
+        }
+        
+        public static float ZeroOut(this float v)
+        {
+            return math.abs(v) < Epsilon ? 0 : v;
         }
 
         public static bool IsEqualTo(this float3 f, float3 to)

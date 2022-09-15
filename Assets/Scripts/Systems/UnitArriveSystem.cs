@@ -10,7 +10,8 @@ namespace Systems
 {
     // [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
     // [UpdateAfter(typeof(StepPhysicsWorld))]
-    // [UpdateBefore(typeof(EndFramePhysicsSystem))]
+    // 
+    [DisableAutoCreation]
     public partial class UnitArriveSystem : SystemBase
     {
         private EntityQuery _movementQuery;

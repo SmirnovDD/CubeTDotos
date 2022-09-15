@@ -3,6 +3,8 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Physics;
+using UnityEngine;
+using RaycastHit = Unity.Physics.RaycastHit;
 
 namespace Utils
 {
@@ -98,7 +100,7 @@ namespace Utils
         /// <param name="collisionWorld"></param>
         /// <param name="ignore">Will ignore this entity if it was hit. Useful to prevent returning hits from the caster.</param>
         /// <returns></returns>
-        public static unsafe NativeList<ColliderCastHit> ColliderCastAll(PhysicsCollider collider, float3 from, float3 to, in CollisionWorld collisionWorld, Entity ignore, CollisionFilter? filter, Allocator allocator = Allocator.TempJob)
+        public static unsafe NativeList<ColliderCastHit> ColliderCastAll(in PhysicsCollider collider, float3 from, float3 to, in CollisionWorld collisionWorld, Entity ignore, CollisionFilter? filter, Allocator allocator = Allocator.TempJob)
         {
             ColliderCastInput input = new ColliderCastInput()
             {
@@ -109,6 +111,7 @@ namespace Utils
             
             if (filter.HasValue)
                 input.Collider->Filter = filter.Value;
+            Debug.Log($"{input.Collider->Filter.CollidesWith}");
             
             NativeList<ColliderCastHit> allHits = new NativeList<ColliderCastHit>(allocator);
 
@@ -190,7 +193,7 @@ namespace Utils
         }
 
         /// <summary>
-        /// Performs a raycast along the specified ray and returns all resulting <see cref="RaycastHit"/>s.<para/>
+        /// Performs a raycast along the specified ray and returns all resulting <see cref="Unity.Physics.RaycastHit"/>s.<para/>
         /// The caller must dispose of the returned list.
         /// </summary>
         /// <param name="collisionWorld"></param>
