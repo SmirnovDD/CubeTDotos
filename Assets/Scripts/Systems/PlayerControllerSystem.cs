@@ -12,7 +12,7 @@ namespace Systems
     /// </summary>
     // [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
     // [UpdateAfter(typeof(ExportPhysicsWorld))]
-    [UpdateBefore(typeof(CharacterController))]
+    //[UpdateBefore(typeof(CharacterController))]
     //[UpdateBefore(typeof(EndFramePhysicsSystem))]
     public partial class PlayerControllerSystem : SystemBase
     {

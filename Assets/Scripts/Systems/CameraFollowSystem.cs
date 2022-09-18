@@ -6,7 +6,8 @@ using UnityEngine;
 using Utils;
 
 namespace VertexFragment
-{
+{[DisableAutoCreation]
+
     /// <summary>
     /// Basic system which follows the entity with the <see cref="CameraFollowComponent"/>.
     /// </summary>

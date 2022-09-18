@@ -15,7 +15,7 @@ using SphereCollider = Unity.Physics.SphereCollider;
 namespace Systems
 {
         [BurstCompile]
-        public partial struct UnitArriveControllerSetValuesJob : IJobEntity
+        public partial struct UnitControllerSetValuesJobRival : IJobEntity
         {
             public float3 TargetPos;
             public float DeltaTime;

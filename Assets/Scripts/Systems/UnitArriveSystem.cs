@@ -61,7 +61,7 @@ namespace Systems
             // var translationTypeHandle = GetComponentTypeHandle<Translation>();
             // var rotationTypeHandle = GetComponentTypeHandle<Rotation>();
             //
-            var job = new UnitArriveControllerSetValuesJob
+            var job = new UnitControllerSetValuesJobRival
             {
                 TargetPos = _targetPosition,
                 DeltaTime = Time.DeltaTime,

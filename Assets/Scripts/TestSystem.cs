@@ -8,7 +8,7 @@ using Unity.Transforms;
 using UnityEngine;
 using Utils;
 using CapsuleCollider = Unity.Physics.CapsuleCollider;
-//[DisableAutoCreation]
+[DisableAutoCreation]
 public partial class TestSystem : SystemBase
 {
     protected override void OnUpdate()
