@@ -88,7 +88,37 @@ namespace Utils
 
             return true;
         }
+        
+        public static unsafe NativeList<ColliderCastHit> ColliderCastAll(in PhysicsCollider collider, float3 from, float3 to, CollisionWorld collisionWorld, CollisionFilter filter, CharacterControllerHorizontalCollisionsCollector collector)
+        {
+            ColliderCastInput input = new ColliderCastInput()
+            {
+                Collider = collider.ColliderPtr,
+                Start = from,
+                End = to,
+            };
+            
+            input.Collider->Filter = filter;
+            
+            collisionWorld.CastCollider(input, ref collector);
+            return collector.AllHits;
+        }
 
+        public static unsafe ColliderCastHit ColliderCastAll(in PhysicsCollider collider, float3 from, float3 to, CollisionWorld collisionWorld, ClosestHitCollector<ColliderCastHit> collector)
+        {
+            ColliderCastInput input = new ColliderCastInput()
+            {
+                Collider = collider.ColliderPtr,
+                Start = from,
+                End = to,
+            };
+            
+            //input.Collider->Filter = filter;
+            
+            collisionWorld.CastCollider(input, ref collector);
+            return collector.ClosestHit;
+        }
+        
         /// <summary>
         /// Performs a collider cast along the specified ray and returns all resulting <see cref="ColliderCastHit"/>s.<para/>
         /// 
@@ -111,7 +141,6 @@ namespace Utils
             
             if (filter.HasValue)
                 input.Collider->Filter = filter.Value;
-            Debug.Log($"{input.Collider->Filter.CollidesWith}");
             
             NativeList<ColliderCastHit> allHits = new NativeList<ColliderCastHit>(allocator);
 

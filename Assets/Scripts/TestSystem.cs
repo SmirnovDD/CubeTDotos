@@ -24,28 +24,12 @@ public partial class TestSystem : SystemBase
             NativeList<ColliderCastHit> allHits = new NativeList<ColliderCastHit>(Allocator.Temp);
             var collector = new CharacterControllerHorizontalCollisionsCollector(allHits, entity, translation, 1);
             
-            var verticalCollisions = ColliderCastAll(collider, translation.Value, translation.Value - new float3(0, 0.0f, 0),  collisionWorld, CollisionFilters.DynamicWithPhysical, collector);
+            var verticalCollisions = PhysicsUtilities.ColliderCastAll(collider, translation.Value, translation.Value - new float3(0, 0.0f, 0),  collisionWorld, CollisionFilters.DynamicWithPhysical, collector);
             if (verticalCollisions.Length == 0)
                 Debug.Log($"{verticalCollisions.Length}");
            
             verticalCollisions.Dispose();
         }).WithBurst().ScheduleParallel(Dependency);
         Dependency.Complete();
-    }
-    
-    public static unsafe NativeList<ColliderCastHit> ColliderCastAll(in PhysicsCollider collider, float3 from, float3 to, in CollisionWorld collisionWorld, CollisionFilter filter, CharacterControllerHorizontalCollisionsCollector collector)
-    {
-        ColliderCastInput input = new ColliderCastInput()
-        {
-            Collider = collider.ColliderPtr,
-            Start = from,
-            End = to,
-        };
-            
-        input.Collider->Filter = filter;
-        Debug.Log($"{input.Collider->Filter.CollidesWith}");
-            
-        collisionWorld.CastCollider(input, ref collector);
-        return collector.AllHits;
     }
 }

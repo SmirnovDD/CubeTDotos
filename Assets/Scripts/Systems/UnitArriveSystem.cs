@@ -8,10 +8,9 @@ using Unity.Transforms;
 
 namespace Systems
 {
-    // [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
-    // [UpdateAfter(typeof(StepPhysicsWorld))]
-    // 
-    [DisableAutoCreation]
+    [UpdateInGroup(typeof(SimulationSystemGroup), OrderFirst = true)]
+    [UpdateBefore(typeof(FixedStepSimulationSystemGroup))]
+    //[DisableAutoCreation]
     public partial class UnitArriveSystem : SystemBase
     {
         private EntityQuery _movementQuery;
@@ -29,12 +28,12 @@ namespace Systems
             {
                 All = new[]
                 {
-                    ComponentType.ReadWrite<CharacterControllerComponentData>(),
+                    ComponentType.ReadWrite<ThirdPersonCharacterInputs>(),
                     ComponentType.ReadWrite<PhysicsCollider>(),
                     ComponentType.ReadOnly<UnitArriveTag>(),
                     ComponentType.ReadOnly<Translation>(),
                     ComponentType.ReadOnly<Rotation>(),
-                    ComponentType.ReadOnly<AIMovementData>()
+                    ComponentType.ReadOnly<AIMovementData>(),
                 }
             };
         }
@@ -49,10 +48,14 @@ namespace Systems
         {
             if (_movementQuery.CalculateChunkCount() == 0)
                 return;
-            //
-            var target = GetSingleton<TargetsCollectionData>().Target;
+            
+            var player = GetSingleton<PlayerTag>();
             var targetTranslation = GetComponentDataFromEntity<Translation>(true);
-            _targetPosition = targetTranslation[target].Value;
+            _targetPosition = targetTranslation[player.Entity].Value;
+            //
+            // var targetsCollection = GetSingleton<TargetsCollectionData>();
+            // var target = targetsCollection.Target;
+            
             //
             // var entityTypeHandle = GetEntityTypeHandle();
             var colliderData = GetComponentDataFromEntity<PhysicsCollider>();
@@ -61,7 +64,7 @@ namespace Systems
             // var translationTypeHandle = GetComponentTypeHandle<Translation>();
             // var rotationTypeHandle = GetComponentTypeHandle<Rotation>();
             //
-            var job = new UnitControllerSetValuesJobRival
+            var job = new UnitControllerSetValuesRivalJob
             {
                 TargetPos = _targetPosition,
                 DeltaTime = Time.DeltaTime,

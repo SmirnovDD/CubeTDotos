@@ -13,10 +13,10 @@ GameObject:
   - component: {fileID: 7232381226654158710}
   - component: {fileID: 7232381226654158708}
   - component: {fileID: 7232381226654158714}
-  - component: {fileID: 7232381226654158713}
   - component: {fileID: -3585205123153709513}
   - component: {fileID: 598509453613154621}
   - component: {fileID: -23476759422759737}
+  - component: {fileID: 2210493854558195235}
   m_Layer: 0
   m_Name: Unit
   m_TagString: Untagged
@@ -114,26 +114,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29c5955addfc4885915c839ea3010130, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &7232381226654158713
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7232381226654158707}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff4693f894a046fa86185f5e813e2e3a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Gravity:
-    x: 0
-    y: -9.81
-    z: 0
-  Speed: 5
-  JumpStrength: 5
-  MaxStep: 0.3
-  Drag: 0.3
 --- !u!114 &-3585205123153709513
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -304,3 +284,64 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad58ecc1daf9d3d438193b8f28fab59f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2210493854558195235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7232381226654158707}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a08537e9881c6a42ae913eec7a3ab33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CharacterBody:
+    CustomPhysicsBodyTags:
+      Tag00: 0
+      Tag01: 0
+      Tag02: 0
+      Tag03: 0
+      Tag04: 0
+      Tag05: 0
+      Tag06: 0
+      Tag07: 0
+    InterpolateTranslation: 1
+    InterpolateRotation: 0
+    EvaluateGrounding: 1
+    SnapToGround: 1
+    GroundSnappingDistance: 0.3
+    MaxGroundedSlopeAngle: 60
+    DetectMovementCollisions: 1
+    DecollideFromOverlaps: 1
+    ProjectVelocityOnInitialOverlaps: 0
+    MaxContinuousCollisionsIterations: 8
+    MaxOverlapDecollisionIterations: 2
+    DiscardMovementWhenExceedMaxIterations: 1
+    KillVelocityWhenExceedMaxIterations: 1
+    DetectObstructionsForParentBodyMovement: 0
+    SimulateDynamicBody: 0
+    Mass: 1
+  ThirdPersonCharacter:
+    RotationSharpness: 25
+    GroundMaxSpeed: 10
+    GroundedMovementSharpness: 15
+    AirAcceleration: 50
+    AirMaxSpeed: 10
+    AirDrag: 0
+    JumpSpeed: 10
+    Gravity:
+      x: -0
+      y: -30
+      z: -0
+    StepHandling: 1
+    MaxStepHeight: 0.3
+    ExtraStepChecksDistance: 0.1
+    PreventGroundingWhenMovingTowardsNoGrounding: 1
+    HasMaxDownwardSlopeChangeAngle: 0
+    MaxDownwardSlopeChangeAngle: 90
+    ConstrainVelocityToGroundPlane: 1
+    GroundingUp:
+      x: 0
+      y: 1
+      z: 0
