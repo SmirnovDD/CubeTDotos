@@ -4,6 +4,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Physics;
 using UnityEngine;
+using Collider = Unity.Physics.Collider;
 using RaycastHit = Unity.Physics.RaycastHit;
 
 namespace Utils
@@ -104,18 +105,17 @@ namespace Utils
             return collector.AllHits;
         }
 
-        public static unsafe ColliderCastHit ColliderCastAll(in PhysicsCollider collider, float3 from, float3 to, CollisionWorld collisionWorld, ClosestHitCollector<ColliderCastHit> collector)
+        public static unsafe ColliderCastHit ColliderCastAll(in BlobAssetReference<Collider> collider, float3 from, float3 to, in CollisionWorld collisionWorld, ref DemoCollectors.ObstacleAvoidanceCollector collector)
         {
             ColliderCastInput input = new ColliderCastInput()
             {
-                Collider = collider.ColliderPtr,
+                Collider = (Collider*)collider.GetUnsafePtr(),
                 Start = from,
                 End = to,
             };
             
-            //input.Collider->Filter = filter;
-            
             collisionWorld.CastCollider(input, ref collector);
+            
             return collector.ClosestHit;
         }
         

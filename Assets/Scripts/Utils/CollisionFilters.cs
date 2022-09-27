@@ -48,8 +48,8 @@ namespace Utils
         
         public static readonly CollisionFilter ObstacleAvoidanceCollider = new CollisionFilter()
         {
-            BelongsTo = (uint) CollisionLayer.ObstacleAvoidanceCollider,
-            CollidesWith = (uint) CollisionLayer.Solid
+            BelongsTo = (uint) (CollisionLayer.Unit | CollisionLayer.Dynamic),
+            CollidesWith = (uint) (CollisionLayer.Solid | CollisionLayer.Dynamic)
         };
         
         public static readonly CollisionFilter TerrainCollider = new CollisionFilter()

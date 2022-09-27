@@ -151,7 +151,6 @@ namespace Systems
                 }
         
                 _obstacleIsInTheWay = true;
-                //Debug.DrawLine(position.Value, _obstacleCollisionPoint, Color.yellow);
 
                 horizontalDistances.Dispose();
             }

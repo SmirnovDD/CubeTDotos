@@ -1,15 +1,17 @@
 ﻿using Data;
+using Rival;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Physics;
 using Unity.Physics.Systems;
 using Unity.Transforms;
+using UnityEngine;
 
-namespace Systems
+namespace DEMO
 {
     [UpdateInGroup(typeof(SimulationSystemGroup), OrderFirst = true)]
-    [UpdateBefore(typeof(FixedStepSimulationSystemGroup))]
+    [UpdateBefore(typeof(ThirdPersonCharacterMovementSystem))]
     //[DisableAutoCreation]
     public partial class UnitArriveSystem : SystemBase
     {
@@ -29,10 +31,8 @@ namespace Systems
                 All = new[]
                 {
                     ComponentType.ReadWrite<ThirdPersonCharacterInputs>(),
-                    ComponentType.ReadWrite<PhysicsCollider>(),
                     ComponentType.ReadOnly<UnitArriveTag>(),
                     ComponentType.ReadOnly<Translation>(),
-                    ComponentType.ReadOnly<Rotation>(),
                     ComponentType.ReadOnly<AIMovementData>(),
                 }
             };
@@ -58,7 +58,6 @@ namespace Systems
             
             //
             // var entityTypeHandle = GetEntityTypeHandle();
-            var colliderData = GetComponentDataFromEntity<PhysicsCollider>();
             // var characterControllerTypeHandle = GetComponentTypeHandle<CharacterControllerComponentData>();
             // var aiMovementDataTypeHandle = GetComponentTypeHandle<AIMovementData>();
             // var translationTypeHandle = GetComponentTypeHandle<Translation>();
@@ -69,9 +68,7 @@ namespace Systems
                 TargetPos = _targetPosition,
                 DeltaTime = Time.DeltaTime,
                 //EntityHandles = entityTypeHandle,
-                ColliderData = colliderData,
                 CollisionWorld = _buildPhysicsWorld.PhysicsWorld.CollisionWorld,
-                ColliderCastDirections = new NativeArray<float3>(3, Allocator.TempJob)
 
                 // CharacterControllerHandles = characterControllerTypeHandle,
                 // AIMovementDataHandles = aiMovementDataTypeHandle,
@@ -83,8 +80,6 @@ namespace Systems
             Dependency = job.ScheduleParallel(_movementQuery, Dependency);
             
             Dependency.Complete();
-
-            job.ColliderCastDirections.Dispose();
         }
     }
 }

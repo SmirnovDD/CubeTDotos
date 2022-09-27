@@ -127,8 +127,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SquaredStoppingDistance: 3
-  ObstacleAvoidanceDistance: 1
-  RotationSpeed: 10
+  ObstacleAvoidanceDistance: 2
+  RotationSpeed: 5
 --- !u!114 &598509453613154621
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -323,7 +323,7 @@ MonoBehaviour:
     SimulateDynamicBody: 0
     Mass: 1
   ThirdPersonCharacter:
-    RotationSharpness: 25
+    RotationSharpness: 10
     GroundMaxSpeed: 10
     GroundedMovementSharpness: 15
     AirAcceleration: 50
