@@ -1,17 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
-using Data;
-using Rival;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Physics;
 using Unity.Transforms;
-using UnityEngine;
 using Utils;
 using CapsuleCollider = Unity.Physics.CapsuleCollider;
-using Material = Unity.Physics.Material;
 using MathUtilities = Utils.MathUtilities;
 using PhysicsUtilities = Utils.PhysicsUtilities;
 
@@ -126,8 +120,7 @@ namespace DEMO
             {
                 var capsuleCollider = (CapsuleCollider*) collider.ColliderPtr;
                 var colliderForCheck = CapsuleCollider.Create(capsuleCollider->Geometry, CollisionFilters.ObstacleAvoidanceCollider, Material.Default);
-                var closestHit = PhysicsUtilities.ColliderCastAll(in colliderForCheck, position.Value, targetPos,
-                    in CollisionWorld, ref collector);
+                var closestHit = PhysicsUtilities.ColliderCastAll(in colliderForCheck, position.Value, targetPos, in CollisionWorld, ref collector);
                 
                 colliderForCheck.Dispose();
 

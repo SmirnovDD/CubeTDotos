@@ -97,6 +97,58 @@ namespace Utils
         }
         
         public static float SqrMagnitude(this float3 v) => (float) ((double) v.x * v.x + (double) v.y * v.y + (double) v.z * v.z);
+        public static float Length(this float3 v) => math.length(v);
 
+        public static float3 GetForwardVectorFromRotation(quaternion rotation)
+
+        {            
+            float num1 = rotation.value.x * 2f;
+            float num2 = rotation.value.y * 2f;
+            float num3 = rotation.value.z * 2f;
+            float num4 = rotation.value.x * num1;
+            float num5 = rotation.value.y * num2;
+            float num6 = rotation.value.z * num3;
+            float num7 = rotation.value.x * num2;
+            float num8 = rotation.value.x * num3;
+            float num9 = rotation.value.y * num3;
+            float num10 = rotation.value.w * num1;
+            float num11 = rotation.value.w * num2;
+            float num12 = rotation.value.w * num3;
+            float3 vector3;
+            float3 point = math.forward();
+            vector3.x = (float) ((1.0 - (num5 + (double) num6)) * point.x + (num7 - (double) num12) * point.y + (num8 + (double) num11) * point.z);
+            vector3.y = (float) ((num7 + (double) num12) * point.x + (1.0 - (num4 + (double) num6)) * point.y + (num9 - (double) num10) * point.z);
+            vector3.z = (float) ((num8 - (double) num11) * point.x + (num9 + (double) num10) * point.y + (1.0 - (num4 + (double) num5)) * point.z);
+            return vector3;
+        }
+        
+        
+        public static float3 ToEulerAngles(this quaternion q)
+        {
+            float3 angles = float3.zero;
+
+            // roll / x
+            double sinr_cosp = 2 * (q.value.w * q.value.x + q.value.y * q.value.z);
+            double cosr_cosp = 1 - 2 * (q.value.x * q.value.x + q.value.y * q.value.y);
+            angles.x = (float)math.atan2(sinr_cosp, cosr_cosp);
+
+            // pitch / y
+            double sinp = 2 * (q.value.w * q.value.y - q.value.z * q.value.x);
+            if (Math.Abs(sinp) >= 1)
+            {
+                angles.y = sinp >= 0 ? math.PI / 2 : -math.PI / 2 ;
+            }
+            else
+            {
+                angles.y = (float)math.asin(sinp);
+            }
+
+            // yaw / z
+            double siny_cosp = 2 * (q.value.w * q.value.z + q.value.x * q.value.y);
+            double cosy_cosp = 1 - 2 * (q.value.y * q.value.y + q.value.z * q.value.z);
+            angles.z = (float)math.atan2(siny_cosp, cosy_cosp);
+
+            return angles;
+        }
     }
 }

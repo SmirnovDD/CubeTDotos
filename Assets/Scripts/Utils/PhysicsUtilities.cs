@@ -119,6 +119,22 @@ namespace Utils
             return collector.ClosestHit;
         }
         
+        public unsafe static NativeList<ColliderCastHit> ColliderCastAllWithoutFilter(in BlobAssetReference<Collider> collider, in float3 from, in float3 to, in CollisionWorld collisionWorld, Allocator allocator)
+        {
+            ColliderCastInput input = new ColliderCastInput()
+            {
+                Collider = (Collider*) collider.GetUnsafePtr(),
+                Start = from,
+                End = to
+            };
+
+            NativeList<ColliderCastHit> allHits = new NativeList<ColliderCastHit>(allocator);
+
+            collisionWorld.CastCollider(input, ref allHits);
+
+            return allHits;
+        }
+        
         /// <summary>
         /// Performs a collider cast along the specified ray and returns all resulting <see cref="ColliderCastHit"/>s.<para/>
         /// 

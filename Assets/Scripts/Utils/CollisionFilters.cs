@@ -13,7 +13,8 @@ namespace Utils
             Unit = 1 << 2,
             ObstacleAvoidanceCollider = 1 << 3,
             Terrain = 1 << 4,
-            Dynamic = 1 << 5
+            Dynamic = 1 << 5,
+            Fireball = 1 << 6,
         }
 
         public static readonly CollisionFilter Solid = new CollisionFilter()
@@ -56,6 +57,12 @@ namespace Utils
         {
             BelongsTo = (uint) CollisionLayer.Terrain,
             CollidesWith = (uint) (CollisionLayer.Solid | CollisionLayer.Character | CollisionLayer.Unit)
+        };
+        
+        public static readonly CollisionFilter Fireball = new CollisionFilter()
+        {
+            BelongsTo = (uint) CollisionLayer.Fireball,
+            CollidesWith = (uint) (CollisionLayer.Terrain | CollisionLayer.Unit)
         };
     }
 }
