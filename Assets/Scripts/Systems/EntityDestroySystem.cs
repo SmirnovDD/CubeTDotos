@@ -3,7 +3,7 @@ using Unity.Entities;
 
 namespace DEMO
 {
-    [UpdateInGroup(typeof(SimulationSystemGroup))]
+    [UpdateInGroup(typeof(LateSimulationSystemGroup))]
     public partial class EntityDestroySystem : SystemBase
     {
         private EntityManager _entityManager;

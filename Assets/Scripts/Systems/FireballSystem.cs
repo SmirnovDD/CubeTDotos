@@ -8,6 +8,7 @@ using Unity.Transforms;
 namespace DEMO
 {
     [UpdateInGroup(typeof(SimulationSystemGroup))]
+    [UpdateAfter(typeof(OrbitCameraSystem))]
     public partial class FireballSystem : SystemBase
     {
         private EntityQuery _entityQuery;
@@ -39,7 +40,8 @@ namespace DEMO
         }
         
         protected override void OnUpdate()
-        {// get component from entity ignore destruction
+        {// get component from entity ignore destruction    
+            var dontDestroyObjects = GetComponentDataFromEntity<DontDestroyTag>(true);
             EntityCommandBuffer ecb = new EntityCommandBuffer(Allocator.TempJob);
             EntityCommandBuffer.ParallelWriter parallelEcb = ecb.AsParallelWriter();
             
@@ -47,6 +49,7 @@ namespace DEMO
             {
                 CollisionWorld = _buildPhysicsWorld.PhysicsWorld.CollisionWorld,
                 EntityCommandBuffer = parallelEcb,
+                DontDestroyObjectsDataFromEntity = dontDestroyObjects,
                 DeltaTime = Time.DeltaTime,
                 Impulse = 42f,
                 Gravity = -30f

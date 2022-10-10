@@ -5,9 +5,12 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Physics;
 using Unity.Transforms;
+using UnityEngine;
 using Utils;
+using Material = Unity.Physics.Material;
 using MathUtilities = Utils.MathUtilities;
 using PhysicsUtilities = Utils.PhysicsUtilities;
+using SphereCollider = Unity.Physics.SphereCollider;
 
 namespace DEMO
 {
@@ -15,6 +18,7 @@ namespace DEMO
     public partial struct FireballJob : IJobEntity
     {
         [ReadOnly] public CollisionWorld CollisionWorld;
+        [ReadOnly] public ComponentDataFromEntity<DontDestroyTag> DontDestroyObjectsDataFromEntity;
         public EntityCommandBuffer.ParallelWriter EntityCommandBuffer;
 
         public float DeltaTime;
@@ -36,7 +40,7 @@ namespace DEMO
                 var allHits = PhysicsUtilities.ColliderCastAllWithoutFilter(in colliderForCheck, in curPos, in newPos, in CollisionWorld, Allocator.Temp);
                 foreach (var colliderCastHit in allHits)
                 {
-                    if (!getcdatafrim<TerrainTag>(colliderCastHit.Entity))
+                   if (!DontDestroyObjectsDataFromEntity.HasComponent(colliderCastHit.Entity))
                         EntityCommandBuffer.AddComponent<DestroyEntityTag>(0, colliderCastHit.Entity);
                 }
                 if (allHits.Length > 0)
