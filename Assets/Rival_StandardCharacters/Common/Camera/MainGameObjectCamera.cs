@@ -15,6 +15,7 @@ public class MainGameObjectCamera : MonoBehaviour
             if (mainCameraSystem != null && mainCameraSystem.Enabled)
             {
                 mainCameraSystem.CameraGameObjectTransform = this.transform;
+                Cursor.lockState = CursorLockMode.Locked;
                 Destroy(this);
             }
         }

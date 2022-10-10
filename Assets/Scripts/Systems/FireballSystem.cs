@@ -13,13 +13,13 @@ namespace DEMO
         private EntityQuery _entityQuery;
         private EntityQueryDesc _entityQueryDesc;
         private BuildPhysicsWorld _buildPhysicsWorld;
-        
+
         protected override void OnCreate()
         {
             base.OnCreate();
             
             _buildPhysicsWorld = World.GetOrCreateSystem<BuildPhysicsWorld>();
-            
+
             _entityQueryDesc = new EntityQueryDesc()
             {
                 All = new[]
@@ -39,7 +39,7 @@ namespace DEMO
         }
         
         protected override void OnUpdate()
-        {
+        {// get component from entity ignore destruction
             EntityCommandBuffer ecb = new EntityCommandBuffer(Allocator.TempJob);
             EntityCommandBuffer.ParallelWriter parallelEcb = ecb.AsParallelWriter();
             

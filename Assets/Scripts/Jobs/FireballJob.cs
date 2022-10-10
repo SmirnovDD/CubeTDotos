@@ -16,7 +16,7 @@ namespace DEMO
     {
         [ReadOnly] public CollisionWorld CollisionWorld;
         public EntityCommandBuffer.ParallelWriter EntityCommandBuffer;
-        
+
         public float DeltaTime;
         public float Impulse;
         public float Gravity;
@@ -36,9 +36,8 @@ namespace DEMO
                 var allHits = PhysicsUtilities.ColliderCastAllWithoutFilter(in colliderForCheck, in curPos, in newPos, in CollisionWorld, Allocator.Temp);
                 foreach (var colliderCastHit in allHits)
                 {
-                    
-                    EntityCommandBuffer.AddComponent<DestroyEntityTag>(entityInQueryIndex, colliderCastHit.Entity);
-                    
+                    if (!getcdatafrim<TerrainTag>(colliderCastHit.Entity))
+                        EntityCommandBuffer.AddComponent<DestroyEntityTag>(0, colliderCastHit.Entity);
                 }
                 if (allHits.Length > 0)
                     EntityCommandBuffer.AddComponent<DestroyEntityTag>(entityInQueryIndex, entity);

@@ -1,12 +1,8 @@
 ﻿using Data;
-using Rival;
-using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
-using Unity.Physics;
 using Unity.Physics.Systems;
 using Unity.Transforms;
-using UnityEngine;
 
 namespace DEMO
 {
@@ -49,34 +45,21 @@ namespace DEMO
             if (_movementQuery.CalculateChunkCount() == 0)
                 return;
             
-            var player = GetSingleton<PlayerTag>();
-            var targetTranslation = GetComponentDataFromEntity<Translation>(true);
-            _targetPosition = targetTranslation[player.Entity].Value;
-            //
-            // var targetsCollection = GetSingleton<TargetsCollectionData>();
-            // var target = targetsCollection.Target;
+            var player = GetSingleton<TargetsCollectionData>();
             
-            //
-            // var entityTypeHandle = GetEntityTypeHandle();
-            // var characterControllerTypeHandle = GetComponentTypeHandle<CharacterControllerComponentData>();
-            // var aiMovementDataTypeHandle = GetComponentTypeHandle<AIMovementData>();
-            // var translationTypeHandle = GetComponentTypeHandle<Translation>();
-            // var rotationTypeHandle = GetComponentTypeHandle<Rotation>();
-            //
+            if (player.Target == default)
+                return;
+            
+            var targetTranslation = GetComponentDataFromEntity<Translation>(true);
+            _targetPosition = targetTranslation[player.Target].Value;
+            
             var job = new UnitControllerSetValuesRivalJob
             {
                 TargetPos = _targetPosition,
                 DeltaTime = Time.DeltaTime,
-                //EntityHandles = entityTypeHandle,
                 CollisionWorld = _buildPhysicsWorld.PhysicsWorld.CollisionWorld,
-
-                // CharacterControllerHandles = characterControllerTypeHandle,
-                // AIMovementDataHandles = aiMovementDataTypeHandle,
-                // TranslationHandles = translationTypeHandle,
-                // RotationHandles = rotationTypeHandle
             };
-            //
-            
+
             Dependency = job.ScheduleParallel(_movementQuery, Dependency);
             
             Dependency.Complete();
