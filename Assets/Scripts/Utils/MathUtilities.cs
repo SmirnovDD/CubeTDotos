@@ -150,5 +150,10 @@ namespace Utils
 
             return angles;
         }
+
+        public static float3 Normalize(this float3 f)
+        {
+            return math.normalize(f);
+        }
     }
 }

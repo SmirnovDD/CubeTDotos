@@ -45,13 +45,13 @@ namespace DEMO
             if (_movementQuery.CalculateChunkCount() == 0)
                 return;
             
-            var player = GetSingleton<TargetsCollectionData>();
+            var targetsCollection = GetSingleton<TargetsCollectionData>();
             
-            if (player.Target == default)
+            if (targetsCollection.Target == default)
                 return;
             
             var targetTranslation = GetComponentDataFromEntity<Translation>(true);
-            _targetPosition = targetTranslation[player.Target].Value;
+            _targetPosition = targetTranslation[targetsCollection.Target].Value;
             
             var job = new UnitControllerSetValuesRivalJob
             {
