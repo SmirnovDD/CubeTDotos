@@ -8,7 +8,8 @@ using Unity.Transforms;
 namespace DEMO
 {
     [UpdateInGroup(typeof(SimulationSystemGroup))]
-    [UpdateAfter(typeof(OrbitCameraSystem))]
+    [UpdateAfter(typeof(TurretShootSystem))]
+    [UpdateBefore(typeof(TransformSystemGroup))]
     public partial class FireballSystem : SystemBase
     {
         private EntityQuery _entityQuery;

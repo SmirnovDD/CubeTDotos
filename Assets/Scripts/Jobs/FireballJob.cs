@@ -5,7 +5,6 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Physics;
 using Unity.Transforms;
-using UnityEngine;
 using Utils;
 using Material = Unity.Physics.Material;
 using MathUtilities = Utils.MathUtilities;
@@ -28,7 +27,6 @@ namespace DEMO
         public void Execute(Entity entity, [EntityInQueryIndex] int entityInQueryIndex, ref Translation translation, ref Rotation rotation, in PhysicsCollider collider)
         {
             float3 forwardVector = MathUtilities.GetForwardVectorFromRotation(rotation.Value);
-            
             float3 curPos = translation.Value;
             float3 newPos = curPos + (forwardVector * (Impulse * DeltaTime)) + math.up() * (Gravity * (DeltaTime * DeltaTime));
             float3 newForwardVector = newPos - curPos;

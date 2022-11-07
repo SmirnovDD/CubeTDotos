@@ -1,16 +1,15 @@
 using UnityEngine;
-using Data;
 using Rival;
 using Unity.Collections;
-using Unity.Collections.LowLevel.Unsafe;
 using Unity.Entities;
 using Unity.Physics.Systems;
 using Unity.Transforms;
 
 namespace DEMO
 {
+    //[DisableAutoCreation]
     [UpdateInGroup(typeof(SimulationSystemGroup))]
-    [UpdateBefore(typeof(FireballJob))]
+    [UpdateBefore(typeof(TransformSystemGroup))]
     public partial class TurretShootSystem : SystemBase
     {
         private EntityQuery _query;
@@ -29,7 +28,7 @@ namespace DEMO
             {
                 All = new[]
                 {
-                    ComponentType.ReadWrite<TurretData>(), //TODO change to something else the job runs foreach turret anyways
+                    ComponentType.ReadWrite<TurretData>(),
                 }
             };
         }
@@ -46,25 +45,22 @@ namespace DEMO
             if (_query.CalculateChunkCount() == 0)
                 return;
             
-            //var units = GetComponentTypeHandle<UnitTag>(true);
             var unitsQuery = GetEntityQuery(ComponentType.ReadOnly<UnitTag>());
             var allUnits = unitsQuery.ToComponentDataArray<UnitTag>(Allocator.TempJob);
             var translations = GetComponentDataFromEntity<Translation>(true);
             var characterControllers = GetComponentDataFromEntity<KinematicCharacterBody>(true);
-            var allTurrets = GetComponentTypeHandle<TurretData>();
             
             var job = new TurretJob
             {
                 AllUnits = allUnits,
                 AllTranslationsHandle = translations,
                 AllCharacterControllerData = characterControllers,
-                AllTurretsHandle = allTurrets,
                 DeltaTime = Time.DeltaTime,
-                CollisionWorld = _buildPhysicsWorld.PhysicsWorld.CollisionWorld,
-                Gravity = -Physics.gravity.y,
+                //CollisionWorld = _buildPhysicsWorld.PhysicsWorld.CollisionWorld,
+                Gravity = 30,
                 ECB = _ecb.CreateCommandBuffer().AsParallelWriter()
             };
-
+            
             Dependency = job.ScheduleParallel(_query, Dependency);
 
             Dependency.Complete();
